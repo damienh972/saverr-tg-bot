@@ -10,10 +10,20 @@ import {
   getUserByPhone,
   linkTelegramUser,
   getUserTransactions,
-  getTransactionByRef,
   confirmTransaction,
+  cancelTransaction,
   pb,
 } from "../db/pocketbase.js";
+import { MESSAGES, formatStatus, formatFundsType } from "../config/messages.js";
+import {
+  getFundsInInstructions,
+  getFundsOutInstructions,
+} from "../config/demo-data.js";
+
+function escapeMarkdown(text: string): string {
+  if (!text) return "";
+  return String(text).replace(/([_*\[\]()~`>#+\-=|{}.!])/g, "\\$1");
+}
 
 dotenv.config();
 
@@ -23,7 +33,6 @@ export const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN!, {
 
 const waitingPhone = new Set<string>();
 
-// /start
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id.toString();
 
@@ -31,15 +40,8 @@ bot.onText(/\/start/, async (msg) => {
     const user = await getUserByChatId(chatId);
     await showMainMenu(chatId, user);
   } catch {
-    // pas encore lié
     waitingPhone.add(chatId);
-
-    await bot.sendMessage(
-      chatId,
-      "🎉 Bienvenue chez Saverr Transactions 🎉\n\n" +
-        "Pour sécuriser votre compte, autorisez le bot à connaître VOTRE numéro de téléphone.\n\n" +
-        "👉 Appuyez sur le bouton ci‑dessous."
-    );
+    await bot.sendMessage(chatId, MESSAGES.WELCOME);
 
     const keyboard: ReplyKeyboardMarkup = {
       keyboard: [[{ text: "📱 Partager mon numéro", request_contact: true }]],
@@ -47,94 +49,36 @@ bot.onText(/\/start/, async (msg) => {
       resize_keyboard: true,
     };
 
-    const opts: SendMessageOptions = { reply_markup: keyboard };
-    await bot.sendMessage(chatId, "Partagez votre numéro :", opts);
+    await bot.sendMessage(chatId, MESSAGES.SHARE_PHONE, {
+      reply_markup: keyboard,
+    });
   }
 });
 
-// réception du contact
 bot.on("contact", async (msg) => {
   const chatId = msg.chat.id.toString();
-  const phone = msg.contact?.phone_number;
+  const phone = `+${msg.contact?.phone_number}`;
   const telegramUserId = msg.from?.id?.toString() || "";
 
-  if (!waitingPhone.has(chatId) || !phone) {
-    return;
-  }
+  if (!waitingPhone.has(chatId) || !phone) return;
+
   waitingPhone.delete(chatId);
 
-  // on retire le keyboard
-  const removeKb: ReplyKeyboardRemove = { remove_keyboard: true };
-  await bot.sendMessage(chatId, "Merci, traitement en cours…", {
-    reply_markup: removeKb,
+  await bot.sendMessage(chatId, MESSAGES.PROCESSING_LINK, {
+    reply_markup: { remove_keyboard: true } as ReplyKeyboardRemove,
   });
 
   try {
     const user = await getUserByPhone(phone);
+
     await linkTelegramUser(user.id, chatId, telegramUserId);
-
-    await bot.sendMessage(
-      chatId,
-      `✅ Compte Saverr lié.\n\n📱 ${phone}\n💬 Chat ID: ${chatId}\n\n` +
-        `Vous recevrez ici les mises à jour de vos transactions.`
-    );
-
+    await bot.sendMessage(chatId, MESSAGES.LINK_SUCCESS(phone));
     await showMainMenu(chatId, user);
   } catch {
-    await bot.sendMessage(
-      chatId,
-      `❌ Aucun compte Saverr trouvé avec le numéro ${phone}.\n` +
-        `Vérifiez le numéro enregistré côté Saverr puis refaites /start.`
-    );
+    await bot.sendMessage(chatId, MESSAGES.ACCOUNT_NOT_FOUND(phone));
   }
 });
 
-// /confirm REF
-bot.onText(/\/confirm\s+(.+)/, async (msg, match) => {
-  const chatId = msg.chat.id.toString();
-  const reference = (match?.[1] || "").trim();
-
-  try {
-    const user = await getUserByChatId(chatId);
-
-    const tx = await getTransactionByRef(user.id, reference);
-
-    if (tx.status !== "AWAITING_CONFIRMATION") {
-      await bot.sendMessage(
-        chatId,
-        `❌ ${tx.reference} n'est pas en attente de confirmation.\nStatut actuel : ${tx.status}`
-      );
-      return;
-    }
-
-    console.log("before confirmTransaction", tx.id);
-    await confirmTransaction(tx.id);
-
-    await bot.sendMessage(
-      chatId,
-      `✅ ${tx.reference} confirmée.\nStatut : PROCESSING\n\n/status ${tx.reference}`
-    );
-  } catch (e) {
-    console.error("confirm error", e);
-    await bot.sendMessage(chatId, `❌ Transaction ${reference} introuvable.`);
-  }
-});
-
-// /status REF
-bot.onText(/\/status\s+(.+)/, async (msg, match) => {
-  const chatId = msg.chat.id.toString();
-  const reference = (match?.[1] || "").trim();
-
-  try {
-    const user = await getUserByChatId(chatId);
-    const tx = await getTransactionByRef(user.id, reference);
-    await sendTransactionDetailsWithActions(chatId, tx);
-  } catch {
-    await bot.sendMessage(chatId, `❌ Transaction ${reference} introuvable.`);
-  }
-});
-
-// callbacks (menu)
 bot.on("callback_query", async (cb) => {
   const chatId = cb.message?.chat.id.toString() || "";
   const data = cb.data || "";
@@ -143,28 +87,25 @@ bot.on("callback_query", async (cb) => {
   if (data === "my_txs") {
     await handleMyTransactions(chatId);
   } else if (data === "help") {
-    await bot.sendMessage(
-      chatId,
-      "ℹ️ Commandes :\n/start – lier votre compte\n/confirm REF – confirmer une transaction\n/status REF – voir le détail"
-    );
+    const keyboard: InlineKeyboardMarkup = {
+      inline_keyboard: [[{ text: "🏠 Menu", callback_data: "menu" }]],
+    };
+    await bot.sendMessage(chatId, MESSAGES.HELP, { reply_markup: keyboard });
+  } else if (data === "menu") {
+    try {
+      const user = await getUserByChatId(chatId);
+      await showMainMenu(chatId, user);
+    } catch {
+      await bot.sendMessage(chatId, MESSAGES.USER_NOT_LINKED);
+    }
   } else if (data.startsWith("statusid_")) {
-    const id = data.replace("statusid_", "");
-    await handleStatusById(chatId, id);
-  } else if (data === "confirm_tx") {
-    await bot.sendMessage(
-      chatId,
-      "🔐 *Confirmer transaction*\n\nUtilisez :\n/confirm_TX-ABC123\n\nSeules les transactions *AWAITING_CONFIRMATION* peuvent être confirmées."
-    );
+    await handleStatusById(chatId, data.replace("statusid_", ""));
   } else if (data.startsWith("confirm_")) {
-    const txId = data.replace("confirm_", "");
-    await handleConfirmById(chatId, txId);
-  } else if (data.startsWith("statusid_")) {
-    const id = data.replace("statusid_", "");
-    await handleStatusById(chatId, id);
+    await handleConfirmById(chatId, data.replace("confirm_", ""));
+  } else if (data.startsWith("cancel_")) {
+    await handleCancelById(chatId, data.replace("cancel_", ""));
   }
 });
-
-// helpers
 
 async function showMainMenu(chatId: string, user: any) {
   const keyboard: InlineKeyboardMarkup = {
@@ -173,44 +114,41 @@ async function showMainMenu(chatId: string, user: any) {
       [{ text: "ℹ️ Aide", callback_data: "help" }],
     ],
   };
-  const opts: SendMessageOptions = { reply_markup: keyboard };
 
   await bot.sendMessage(
     chatId,
-    `🏦 Saverr Transactions\n\n👤 ${
-      user.phone || user.name || "Client"
-    }\n\nQue souhaitez-vous faire ?`,
-    opts
+    MESSAGES.MAIN_MENU(user.phone || user.name || "Client"),
+    {
+      reply_markup: keyboard,
+    }
   );
 }
+
 async function handleConfirmById(chatId: string, txId: string) {
   try {
     const user = await getUserByChatId(chatId);
     const tx = await pb.collection("transactions").getOne(txId);
 
     if (tx.user !== user.id) {
-      await bot.sendMessage(
-        chatId,
-        "❌ Cette transaction n'appartient pas à votre compte."
-      );
+      await bot.sendMessage(chatId, MESSAGES.TX_NOT_OWNED);
       return;
     }
+
     if (tx.status !== "AWAITING_CONFIRMATION") {
       await bot.sendMessage(
         chatId,
-        `❌ ${tx.reference} n'est pas en attente de confirmation.\nStatut actuel : ${tx.status}`
+        MESSAGES.CONFIRM_INVALID_STATUS(tx.reference, tx.status)
       );
       return;
     }
 
     await confirmTransaction(tx.id);
-    await bot.sendMessage(
-      chatId,
-      `✅ ${tx.reference} confirmée.\nStatut : PROCESSING\n\n/status ${tx.reference}`
-    );
-  } catch (e) {
-    console.error("handleConfirmById error", e);
-    await bot.sendMessage(chatId, "❌ Transaction introuvable.");
+    await bot.sendMessage(chatId, MESSAGES.CONFIRM_SUCCESS(tx.reference));
+
+    const txUpdated = await pb.collection("transactions").getOne(txId);
+    await sendTransactionDetails(chatId, txUpdated, user);
+  } catch {
+    await bot.sendMessage(chatId, MESSAGES.TX_NOT_FOUND(""));
   }
 }
 
@@ -220,27 +158,28 @@ async function handleMyTransactions(chatId: string) {
     const txs = await getUserTransactions(user.id);
 
     if (!txs.length) {
-      await bot.sendMessage(chatId, "Aucune transaction en cours.");
+      await bot.sendMessage(chatId, MESSAGES.NO_TRANSACTIONS);
       return;
     }
 
-    let msg = `📋 Vos transactions (${txs.length})\n\n`;
-    const buttons: { text: string; callback_data: string }[][] = [];
+    const msg =
+      MESSAGES.TRANSACTIONS_LIST(txs.length) +
+      txs
+        .slice(0, 5)
+        .map((tx: any) => MESSAGES.TRANSACTION_ITEM(tx.reference, tx.status))
+        .join("\n");
 
-    txs.slice(0, 5).forEach((tx: any) => {
-      msg += `• ${tx.reference} (${tx.status})\n`;
-      buttons.push([
-        { text: tx.reference, callback_data: `statusid_${tx.id}` },
-      ]);
-    });
+    const keyboard: InlineKeyboardMarkup = {
+      inline_keyboard: txs
+        .slice(0, 5)
+        .map((tx: any) => [
+          { text: `📋 ${tx.reference}`, callback_data: `statusid_${tx.id}` },
+        ]),
+    };
 
-    const keyboard: InlineKeyboardMarkup = { inline_keyboard: buttons };
-    const opts: SendMessageOptions = { reply_markup: keyboard };
-
-    await bot.sendMessage(chatId, msg, opts);
-  } catch (e) {
-    console.error("handleMyTransactions error", e);
-    await bot.sendMessage(chatId, "⚠️ Faites /start pour lier votre compte.");
+    await bot.sendMessage(chatId, msg, { reply_markup: keyboard });
+  } catch {
+    await bot.sendMessage(chatId, MESSAGES.USER_NOT_LINKED);
   }
 }
 
@@ -248,55 +187,73 @@ async function handleStatusById(chatId: string, txId: string) {
   try {
     const user = await getUserByChatId(chatId);
     const tx = await pb.collection("transactions").getOne(txId);
+
     if (tx.user !== user.id) {
+      await bot.sendMessage(chatId, MESSAGES.TX_NOT_OWNED);
+      return;
+    }
+
+    await sendTransactionDetails(chatId, tx, user);
+  } catch {
+    await bot.sendMessage(chatId, MESSAGES.TX_NOT_FOUND(""));
+  }
+}
+
+async function sendTransactionDetails(chatId: string, tx: any, user: any) {
+  let text =
+    `📋 *Transaction ${tx.reference}*\n\n` +
+    `💰 Montant : ${escapeMarkdown(tx.amount)} ${escapeMarkdown(
+      tx.currency
+    )}\n` +
+    `📤 Dépot : ${escapeMarkdown(formatFundsType(tx.funds_in))}\n` +
+    `📥 Retrait : ${escapeMarkdown(formatFundsType(tx.funds_out))}\n` +
+    `📊 Statut : ${escapeMarkdown(formatStatus(tx.status))}\n`;
+
+  if (tx.status === "PROCESSING") {
+    text += getFundsInInstructions(tx.funds_in);
+  } else if (tx.status === "COMPLETED" || tx.status === "VALIDATED") {
+    text += getFundsOutInstructions(tx.funds_out, user);
+  } else if (tx.status === "AWAITING_CONFIRMATION") {
+    text += MESSAGES.TX_AWAITING_CONFIRM;
+  }
+
+  const opts: SendMessageOptions = {};
+
+  if (tx.status === "AWAITING_CONFIRMATION") {
+    opts.reply_markup = {
+      inline_keyboard: [
+        [
+          { text: MESSAGES.CONFIRM_BUTTON, callback_data: `confirm_${tx.id}` },
+          { text: MESSAGES.CANCEL_BUTTON, callback_data: `cancel_${tx.id}` },
+        ],
+      ],
+    } as InlineKeyboardMarkup;
+  }
+
+  await bot.sendMessage(chatId, text, { ...opts, parse_mode: "Markdown" });
+}
+
+async function handleCancelById(chatId: string, txId: string) {
+  try {
+    const user = await getUserByChatId(chatId);
+    const tx = await pb.collection("transactions").getOne(txId);
+
+    if (tx.user !== user.id) {
+      await bot.sendMessage(chatId, MESSAGES.TX_NOT_OWNED);
+      return;
+    }
+
+    if (tx.status !== "AWAITING_CONFIRMATION") {
       await bot.sendMessage(
         chatId,
-        "❌ Cette transaction n’appartient pas à votre compte."
+        MESSAGES.CONFIRM_INVALID_STATUS(tx.reference, tx.status)
       );
       return;
     }
-    await sendTransactionDetailsWithActions(chatId, tx);
+
+    await cancelTransaction(tx.id);
+    await bot.sendMessage(chatId, MESSAGES.CANCEL_SUCCESS(tx.reference));
   } catch {
-    await bot.sendMessage(chatId, "❌ Transaction introuvable.");
+    await bot.sendMessage(chatId, MESSAGES.TX_NOT_FOUND(""));
   }
-}
-
-function formatTransactionDetails(tx: any): string {
-  let s =
-    `📋 Transaction ${tx.reference}\n\n` +
-    `💰 Montant : ${tx.amount} ${tx.currency}\n` +
-    `📤 Funds IN : ${tx.funds_in}\n` +
-    `📥 Funds OUT : ${tx.funds_out}\n` +
-    `📊 Statut : ${tx.status}\n\n`;
-
-  if (tx.status === "PROCESSING") {
-    s += `📍 Instructions de paiement à compléter selon funds_in/funds_out.\n`;
-  }
-
-  if (tx.status === "AWAITING_CONFIRMATION") {
-    s += `\nVous pouvez confirmer cette transaction ci‑dessous.`;
-  }
-  return s;
-}
-
-async function sendTransactionDetailsWithActions(chatId: string, tx: any) {
-  const text = formatTransactionDetails(tx);
-
-  // Si en attente de confirmation → ajoute bouton
-  let opts: SendMessageOptions = {};
-  if (tx.status === "AWAITING_CONFIRMATION") {
-    const keyboard: InlineKeyboardMarkup = {
-      inline_keyboard: [
-        [
-          {
-            text: "✅ Confirmer cette transaction",
-            callback_data: `confirm_${tx.id}`,
-          },
-        ],
-      ],
-    };
-    opts = { reply_markup: keyboard };
-  }
-
-  await bot.sendMessage(chatId, text, opts);
 }
