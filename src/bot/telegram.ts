@@ -57,7 +57,7 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.on("contact", async (msg) => {
   const chatId = msg.chat.id.toString();
-  const phone = `+${msg.contact?.phone_number}`;
+  const phone = `${msg.contact?.phone_number}`;
   const telegramUserId = msg.from?.id?.toString() || "";
 
   if (!waitingPhone.has(chatId) || !phone) return;

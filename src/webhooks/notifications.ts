@@ -11,15 +11,15 @@ const webhookMessages: Record<string, (tx: any) => string> = {
   FAILED: (tx) => MESSAGES.WEBHOOK_FAILED(tx.reference),
 };
 
-export async function handleTransactionWebhook(tx: any) {
-  const getMessage = webhookMessages[tx.status];
+export async function handleTransactionWebhook(record:any) {
+  const getMessage = webhookMessages[record.status];
   if (!getMessage) return;
 
   try {
-    const user = await pb.collection("users").getOne(tx.user);
+    const user = await pb.collection("users").getOne(record.user);
     if (user.telegram_chat_id)
-      await bot.sendMessage(user.telegram_chat_id, getMessage(tx));
+      await bot.sendMessage(user.telegram_chat_id, getMessage(record));
   } catch {
-    console.log(`No Telegram for user ${tx.user}`);
+    console.log(`No Telegram for user ${record.user}`);
   }
 }
