@@ -6,7 +6,7 @@ export const pb = new PocketBase(
   process.env.POCKETBASE_URL || "http://127.0.0.1:8090"
 );
 
-// Users
+// User management functions
 export async function getUserByChatId(chatId: string) {
   return await pb
     .collection("users")
@@ -18,18 +18,14 @@ export async function getUserByPhone(phone: string) {
   return await pb.collection("users").getFirstListItem(`phone="${phone}"`);
 }
 
-export async function linkTelegramUser(
-  userId: string,
-  chatId: string,
-  telegramUserId: string
-) {
+export async function linkTelegramUser(userId: string, telegramUserId: string) {
   return await pb.collection("users").update(userId, {
-    telegram_chat_id: chatId,
     telegram_user_id: telegramUserId,
   });
 }
 
-// Transactions
+// Transaction management functions
+// Retrieves all transactions for a user, excluding those in CREATED status
 export async function getUserTransactions(userId: string) {
   return await pb.collection("transactions").getFullList({
     sort: "-created",
@@ -56,7 +52,7 @@ export async function cancelTransaction(txId: string) {
     .update(txId, { status: "CANCELLED" });
 }
 
-// Notifications (future)
+// Notification management (for future use)
 export async function createNotification(
   userId: string,
   txId: string,
