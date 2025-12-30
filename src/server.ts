@@ -24,7 +24,7 @@ app.use(
       "https://66e444c4ed5e.ngrok-free.app",
       "https://posingly-abrogable-audry.ngrok-free.dev",
       "https://pseudogyrate-pleuritic-lesia.ngrok-free.dev",
-      "*"
+      "https://90ab61c6a758.ngrok-free.app"
     ],
   })
 );
@@ -184,7 +184,7 @@ app.post("/api/onboarding", requireTma, async (req: any, res) => {
     const telegramUserId = String(req.tma.user?.id);
     const phone = req.body?.phone_number;
     const returnURL = req.body?.returnURL;
-    const fiatCurrencies = req.body?.fiatCurrencies || ["USD"];
+    const fiatCurrencies = req.body?.fiatCurrencies || ["EUR"];
 
     if (!telegramUserId || !phone) {
       return res
@@ -210,7 +210,7 @@ app.post("/api/onboarding", requireTma, async (req: any, res) => {
 
     const noahResponse = await noahClient.createOnboardingSession(user.id, {
       ReturnURL:
-        returnURL || `${process.env.WEBAPP_URL || "https://saverr.io"}/kyc-complete`,
+        returnURL || `${process.env.WEBAPP_URL || "https://saverr.io"}`,
       FiatOptions: fiatOptions,
       Metadata: {
         telegram_user_id: telegramUserId,
