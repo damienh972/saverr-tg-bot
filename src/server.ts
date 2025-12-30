@@ -2,8 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import http from "node:http";
-import { WebSocketServer } from "ws";
-import type WebSocket from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import {
   handleTransactionWebhook,
   handleKycWebhook,
@@ -11,9 +10,9 @@ import {
 import {
   pb,
   getUserTransactions,
-  linkTelegramUser,
-  getUserByPhone,
+  createOrGetUser,
 } from "./db/pocketbase.js";
+import { noahClient } from "./services/noah.js";
 import { validateInitDataRaw } from "./tmaAuth.js";
 
 const app = express();
@@ -21,9 +20,11 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://saverr.io/webapp",
+      "https://demoapp.saverr.io",
       "https://66e444c4ed5e.ngrok-free.app",
       "https://posingly-abrogable-audry.ngrok-free.dev",
+      "https://pseudogyrate-pleuritic-lesia.ngrok-free.dev",
+      "*"
     ],
   })
 );
@@ -175,31 +176,58 @@ app.post("/api/transaction/submit", requireTma, async (req: any, res) => {
   }
 });
 
-// Mock endpoint for development/testing: links Telegram user to phone number
-// and returns a mock KYC onboarding URL
+// Creates or retrieves user in PocketBase and generates Noah KYC onboarding URL
 app.post("/api/onboarding", requireTma, async (req: any, res) => {
   console.log("Received /api/onboarding request", req.body);
-  const telegramUserId = req.tma.user?.id;
-  const phone = req.body?.phone_number;
 
-  if (!telegramUserId || !phone) {
-    return res
-      .status(400)
-      .json({ error: "missing telegram_user_id or phone_number" });
+  try {
+    const telegramUserId = String(req.tma.user?.id);
+    const phone = req.body?.phone_number;
+    const returnURL = req.body?.returnURL;
+    const fiatCurrencies = req.body?.fiatCurrencies || ["USD"];
+
+    if (!telegramUserId || !phone) {
+      return res
+        .status(400)
+        .json({ error: "missing telegram_user_id or phone_number" });
+    }
+
+    // Create or get user in PocketBase
+    const user = await createOrGetUser(phone, telegramUserId);
+    console.log(`User created/found: ${user.id}`);
+
+    // Check if Noah client is available
+    if (!noahClient) {
+      console.warn("Noah client not configured, returning mock URL");
+      const mockUrl = `https://mock-kyc.saverr.io/onboarding?user_id=${user.id}&phone=${encodeURIComponent(phone)}`;
+      return res.json({ onboardingUrl: mockUrl });
+    }
+
+    // Call Noah to create onboarding session
+    const fiatOptions = fiatCurrencies.map((currency: string) => ({
+      FiatCurrencyCode: currency,
+    }));
+
+    const noahResponse = await noahClient.createOnboardingSession(user.id, {
+      ReturnURL:
+        returnURL || `${process.env.WEBAPP_URL || "https://saverr.io"}/kyc-complete`,
+      FiatOptions: fiatOptions,
+      Metadata: {
+        telegram_user_id: telegramUserId,
+        phone,
+        source: "telegram_webapp",
+      },
+    });
+
+    console.log(`Noah onboarding URL created for user ${user.id}`);
+
+    res.json({ onboardingUrl: noahResponse.HostedURL });
+  } catch (error: any) {
+    console.error("Onboarding error:", error);
+    res.status(500).json({
+      error: error.message || "failed_to_create_onboarding_session",
+    });
   }
-
-  // Link Telegram user ID to phone number in PocketBase (dev/demo only)
-  const user = await getUserByPhone(phone);
-  await linkTelegramUser(user.id, telegramUserId);
-
-  // Generate mock onboarding URL for testing
-  const mockUrl = `https://mock-kyc.saverr.io/onboarding?telegram_user_id=${telegramUserId}&phone=${encodeURIComponent(
-    phone
-  )}`;
-
-  console.log(`Mock onboarding URL for user ${telegramUserId}, phone ${phone}`);
-
-  res.json({ onboardingUrl: mockUrl });
 });
 
 // Mock endpoint: creates a wallet address and generates a mock IBAN for the user
