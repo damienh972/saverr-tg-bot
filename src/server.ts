@@ -102,7 +102,7 @@ app.get("/api/me", requireTma, async (req: any, res) => {
     if (!telegramUserId) return res.json({ user: null });
 
     const user = await pb
-      .collection("users")
+      .collection("telegram_users")
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`)
       .catch(() => null);
 
@@ -119,7 +119,7 @@ app.get("/api/transactions", requireTma, async (req: any, res) => {
     if (!telegramUserId) return res.json({ transactions: [] });
 
     const user = await pb
-      .collection("users")
+      .collection("telegram_users")
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`)
       .catch(() => null);
 
@@ -154,7 +154,7 @@ app.post("/api/transaction/submit", requireTma, async (req: any, res) => {
     const telegramUserId = req.tma.user?.id;
 
     const user = await pb
-      .collection("users")
+      .collection("telegram_users")
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`);
 
     // Generate unique transaction reference and set initial status
@@ -245,11 +245,11 @@ app.post("/api/wallet", requireTma, async (req: any, res) => {
   try {
     // Find user by telegram_user_id
     const user = await pb
-      .collection("users")
+      .collection("telegram_users")
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`);
 
     // Update user record with wallet address and generate mock IBAN
-    await pb.collection("users").update(user.id, {
+    await pb.collection("telegram_users").update(user.id, {
       user_tw_eoa: address,
       iban: `FR76${Math.random()
         .toString(36)

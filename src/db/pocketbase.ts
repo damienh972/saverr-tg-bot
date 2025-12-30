@@ -6,27 +6,29 @@ export const pb = new PocketBase(
   process.env.POCKETBASE_URL || "http://127.0.0.1:8090"
 );
 
-// User management functions
+// User management functions using telegram_users collection
 export async function getUserByChatId(chatId: string) {
   return await pb
-    .collection("users")
+    .collection("telegram_users")
     .getFirstListItem(`telegram_chat_id="${chatId}"`);
 }
 
 export async function getUserByPhone(phone: string) {
   console.log("phone", phone);
-  return await pb.collection("users").getFirstListItem(`phone="${phone}"`);
+  return await pb
+    .collection("telegram_users")
+    .getFirstListItem(`phone="${phone}"`);
 }
 
 export async function linkTelegramUser(userId: string, telegramUserId: string) {
-  return await pb.collection("users").update(userId, {
+  return await pb.collection("telegram_users").update(userId, {
     telegram_user_id: telegramUserId,
   });
 }
 
 export async function getUserByTelegramId(telegramUserId: string) {
   return await pb
-    .collection("users")
+    .collection("telegram_users")
     .getFirstListItem(`telegram_user_id="${telegramUserId}"`)
     .catch(() => null);
 }
@@ -37,14 +39,14 @@ export async function createOrGetUser(
 ): Promise<any> {
   // Try to find existing user by phone or telegram_user_id
   const existingByPhone = await pb
-    .collection("users")
+    .collection("telegram_users")
     .getFirstListItem(`phone="${phone}"`)
     .catch(() => null);
 
   if (existingByPhone) {
     // Update telegram_user_id if not set
     if (!existingByPhone.telegram_user_id) {
-      return await pb.collection("users").update(existingByPhone.id, {
+      return await pb.collection("telegram_users").update(existingByPhone.id, {
         telegram_user_id: telegramUserId,
       });
     }
@@ -55,7 +57,7 @@ export async function createOrGetUser(
   if (existingByTelegram) {
     // Update phone if not set
     if (!existingByTelegram.phone) {
-      return await pb.collection("users").update(existingByTelegram.id, {
+      return await pb.collection("telegram_users").update(existingByTelegram.id, {
         phone,
       });
     }
@@ -63,7 +65,7 @@ export async function createOrGetUser(
   }
 
   // Create new user if not found
-  return await pb.collection("users").create({
+  return await pb.collection("telegram_users").create({
     phone,
     telegram_user_id: telegramUserId,
     kyc_status: "DRAFT",
