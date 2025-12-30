@@ -22,6 +22,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://saverr.io/webapp",
+      "https://66e444c4ed5e.ngrok-free.app",
       "https://posingly-abrogable-audry.ngrok-free.dev",
     ],
   })
