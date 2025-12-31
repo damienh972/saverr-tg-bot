@@ -76,7 +76,7 @@
       "values": [
         "DRAFT",
         "NOT_STARTED",
-        "SUBMITTED",
+        "PENDING",
         "APPROVED",
         "REJECTED"
       ]

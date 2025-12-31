@@ -759,7 +759,7 @@
       },
       "FormInput": {
         "type": "object",
-        "description": "Form input to be submitted based on returned FormSchema",
+        "description": "Form input to be PENDING based on returned FormSchema",
         "additionalProperties": true,
         "x-go-type-skip-optional-pointer": true
       },

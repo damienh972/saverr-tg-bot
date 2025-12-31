@@ -72,25 +72,86 @@ app.post("/webhook/transactions", async (req, res) => {
   }
 });
 
-// Webhook endpoint for user updates (e.g., KYC status changes)
-// Broadcasts KYC updates to connected WebSocket clients
+// Webhook endpoint for user updates from PocketBase
+// Note: WebSocket broadcast is now handled by /webhook/noah/customer to avoid duplication
 app.post("/webhook/users", async (req, res) => {
   try {
-    console.log("Received user webhook", req.body);
+    console.log("Received PocketBase user webhook", req.body);
     const payload = req.body as any;
     const record = payload?.record;
-    if (record?.telegram_user_id) {
-      const telegramUserId = Number(record.telegram_user_id);
-      wsBroadcast(telegramUserId, {
-        type: "kyc_updated",
-        kyc_status: record.kyc_status,
-      });
-    }
 
+    // Handle other notification logic (e.g., email, Telegram bot messages)
     await handleKycWebhook(record);
     res.json({ ok: true });
   } catch (e) {
-    console.error("KYC webhook error:", e);
+    console.error("PocketBase webhook error:", e);
+    res.status(500).json({ error: "internal_error" });
+  }
+});
+
+// Webhook endpoint for Noah customer verification updates
+// Receives events from Noah when customer verification status changes
+app.post("/webhook/noah/customer", async (req, res) => {
+  try {
+    console.log("Received Noah customer webhook:", JSON.stringify(req.body, null, 2));
+
+    const { EventType, Data } = req.body;
+
+    // Extract customer ID and verification status from webhook payload
+    const customerId = Data?.CustomerID;
+
+    // Noah uses both old Verification and new Verifications fields
+    const verificationStatus = Data?.Verifications?.Status || Data?.Verification?.Status;
+
+    if (!customerId) {
+      console.error("Missing CustomerID in Noah webhook");
+      return res.status(400).json({ error: "missing_customer_id" });
+    }
+
+    console.log(`Processing Noah webhook for customer: ${customerId}, status: ${verificationStatus}, event: ${EventType}`);
+
+    // Find user by noah_customer_id
+    const user = await pb
+      .collection("telegram_users")
+      .getFirstListItem(`noah_customer_id="${customerId}"`)
+      .catch(() => null);
+
+    if (!user) {
+      console.warn(`User not found for noah_customer_id: ${customerId}`);
+      return res.status(404).json({ error: "user_not_found" });
+    }
+
+    // Map Noah verification status to our kyc_status
+    // Noah statuses: Approved, Pending, Declined
+    let kycStatus = "DRAFT";
+    if (verificationStatus === "Approved") {
+      kycStatus = "APPROVED";
+    } else if (verificationStatus === "Declined") {
+      kycStatus = "REJECTED";
+    } else if (verificationStatus === "Pending") {
+      kycStatus = "PENDING";
+    }
+
+    console.log(`Updating user ${user.id} kyc_status from ${user.kyc_status} to ${kycStatus}`);
+
+    // Update user kyc_status in PocketBase
+    await pb.collection("telegram_users").update(user.id, {
+      kyc_status: kycStatus,
+    });
+
+    // Broadcast update to connected WebSocket clients
+    if (user.telegram_user_id) {
+      const telegramUserId = Number(user.telegram_user_id);
+      wsBroadcast(telegramUserId, {
+        type: "kyc_updated",
+        kyc_status: kycStatus,
+      });
+      console.log(`Broadcasted KYC update to Telegram user: ${telegramUserId}`);
+    }
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error("Noah customer webhook error:", error);
     res.status(500).json({ error: "internal_error" });
   }
 });

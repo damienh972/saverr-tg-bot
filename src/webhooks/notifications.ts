@@ -45,7 +45,7 @@ export async function handleKycWebhook(record: any) {
           message =
             "❌ *KYC refusé*\nContacte le support Saverr pour plus d'informations.";
           break;
-        case "SUBMITTED":
+        case "PENDING":
           message = "📋 *KYC soumis*\nTon dossier est en cours d'analyse.";
           break;
         default:

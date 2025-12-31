@@ -40,7 +40,7 @@ Créez une nouvelle collection avec les paramètres suivants :
 - `phone` (text, required)
 - `telegram_user_id` (text, required)
 - `telegram_chat_id` (text, optional)
-- `kyc_status` (select: DRAFT, NOT_STARTED, SUBMITTED, APPROVED, REJECTED)
+- `kyc_status` (select: DRAFT, NOT_STARTED, PENDING, APPROVED, REJECTED)
 - `noah_virtual_iban` (text, optional)
 - `user_tw_eoa` (text, optional)
 - `name` (text, optional)

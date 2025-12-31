@@ -346,7 +346,7 @@
         "type": "select",
         "values": [
           "NOT_STARTED",
-          "SUBMITTED",
+          "PENDING",
           "APPROVED",
           "REJECTED",
           "DRAFT"
@@ -522,7 +522,7 @@
         "values": [
           "DRAFT",
           "NOT_STARTED",
-          "SUBMITTED",
+          "PENDING",
           "APPROVED",
           "REJECTED"
         ]
