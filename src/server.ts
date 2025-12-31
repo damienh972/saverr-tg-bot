@@ -208,6 +208,20 @@ app.post("/api/transaction/:id/status", requireTma, async (req: any, res) => {
   }
 });
 
+// Simulate Deposited for transaction
+app.post("/api/transaction/:id/simulate_deposit", requireTma, async (req: any, res) => {
+  try {
+    const id = req.params.id;
+
+    const record = await pb.collection("transactions").update(id, { status: "DEPOSITED" });
+    console.log(`transaction id : ${id}  DEPOSITED`);
+    res.json({ ok: true, transaction: record });
+  } catch (e) {
+    console.error("Error updating transaction status:", e);
+    res.status(500).json({ error: "failed_to_update_status" });
+  }
+});
+
 // Creates a new transaction record
 app.post("/api/transaction/submit", requireTma, async (req: any, res) => {
   try {
@@ -315,23 +329,21 @@ app.post("/api/wallet", requireTma, async (req: any, res) => {
       .collection("telegram_users")
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`);
 
+      const iban = `FR76${Math.random()
+        .toString(36)
+        .substring(2, 12)
+        .toUpperCase()}1234567890123`;
     // Update user record with wallet address and generate mock IBAN
     await pb.collection("telegram_users").update(user.id, {
       user_tw_eoa: address,
-      iban: `FR76${Math.random()
-        .toString(36)
-        .substring(2, 12)
-        .toUpperCase()}1234567890123`,
+      noah_virtual_iban: iban ,
     });
 
     console.log(`Mock wallet created for user ${telegramUserId}: ${address}`);
 
     res.json({
       ok: true,
-      iban: `FR76${Math.random()
-        .toString(36)
-        .substring(2, 12)
-        .toUpperCase()}1234567890123`,
+      noah_virtual_iban: iban,
       message: "Wallet et IBAN mock créés !",
     });
   } catch (e) {
