@@ -196,10 +196,16 @@ app.post("/api/onboarding", requireTma, async (req: any, res) => {
     const user = await createOrGetUser(phone, telegramUserId);
     console.log(`User created/found: ${user.id}`);
 
+    // Ensure user has noah_customer_id
+    if (!user.noah_customer_id) {
+      console.error("User missing noah_customer_id");
+      return res.status(500).json({ error: "user_configuration_error" });
+    }
+
     // Check if Noah client is available
     if (!noahClient) {
       console.warn("Noah client not configured, returning mock URL");
-      const mockUrl = `https://mock-kyc.saverr.io/onboarding?user_id=${user.id}&phone=${encodeURIComponent(phone)}`;
+      const mockUrl = `https://mock-kyc.saverr.io/onboarding?customer_id=${user.noah_customer_id}&phone=${encodeURIComponent(phone)}`;
       return res.json({ onboardingUrl: mockUrl });
     }
 
@@ -208,7 +214,7 @@ app.post("/api/onboarding", requireTma, async (req: any, res) => {
       FiatCurrencyCode: currency,
     }));
 
-    const noahResponse = await noahClient.createOnboardingSession(user.id, {
+    const noahResponse = await noahClient.createOnboardingSession(user.noah_customer_id, {
       ReturnURL:
         returnURL || `${process.env.WEBAPP_URL || "https://saverr.io"}`,
       FiatOptions: fiatOptions,

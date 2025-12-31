@@ -1,5 +1,6 @@
 import PocketBase from "pocketbase";
 import dotenv from "dotenv";
+import { v7 as uuidv7 } from 'uuid';
 dotenv.config();
 
 export const pb = new PocketBase(
@@ -44,22 +45,32 @@ export async function createOrGetUser(
     .catch(() => null);
 
   if (existingByPhone) {
-    // Update telegram_user_id if not set
+    // Update telegram_user_id and noah_customer_id if not set
+    const updates: any = {};
     if (!existingByPhone.telegram_user_id) {
-      return await pb.collection("telegram_users").update(existingByPhone.id, {
-        telegram_user_id: telegramUserId,
-      });
+      updates.telegram_user_id = telegramUserId;
+    }
+    if (!existingByPhone.noah_customer_id) {
+      updates.noah_customer_id = uuidv7();
+    }
+    if (Object.keys(updates).length > 0) {
+      return await pb.collection("telegram_users").update(existingByPhone.id, updates);
     }
     return existingByPhone;
   }
 
   const existingByTelegram = await getUserByTelegramId(telegramUserId);
   if (existingByTelegram) {
-    // Update phone if not set
+    // Update phone and noah_customer_id if not set
+    const updates: any = {};
     if (!existingByTelegram.phone) {
-      return await pb.collection("telegram_users").update(existingByTelegram.id, {
-        phone,
-      });
+      updates.phone = phone;
+    }
+    if (!existingByTelegram.noah_customer_id) {
+      updates.noah_customer_id = uuidv7();
+    }
+    if (Object.keys(updates).length > 0) {
+      return await pb.collection("telegram_users").update(existingByTelegram.id, updates);
     }
     return existingByTelegram;
   }
@@ -69,6 +80,7 @@ export async function createOrGetUser(
     phone,
     telegram_user_id: telegramUserId,
     kyc_status: "DRAFT",
+    noah_customer_id: uuidv7()
   });
 }
 
