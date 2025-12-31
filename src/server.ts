@@ -20,11 +20,11 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://demoapp.saverr.io",
       "https://66e444c4ed5e.ngrok-free.app",
       "https://posingly-abrogable-audry.ngrok-free.dev",
       "https://pseudogyrate-pleuritic-lesia.ngrok-free.dev",
-      "https://90ab61c6a758.ngrok-free.app"
+      "https://emelina-nonoxidating-keren.ngrok-free.dev",
+      "*"
     ],
   })
 );
