@@ -89,7 +89,7 @@ export async function createOrGetUser(
 export async function getUserTransactions(userId: string) {
   return await pb.collection("transactions").getFullList({
     sort: "-created",
-    filter: `user="${userId}" && status != "CREATED"`,
+    filter: `user="${userId}"`,
     batch: 200,
   });
 }
