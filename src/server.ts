@@ -20,11 +20,10 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://66e444c4ed5e.ngrok-free.app",
+      "https://demoapp.saverr.io",
       "https://posingly-abrogable-audry.ngrok-free.dev",
       "https://pseudogyrate-pleuritic-lesia.ngrok-free.dev",
       "https://emelina-nonoxidating-keren.ngrok-free.dev",
-      "*"
     ],
   })
 );
@@ -32,6 +31,46 @@ app.use(express.json({ limit: "1mb" }));
 
 // WebSocket hub: maps telegram_user_id to active WebSocket connections
 const socketsByTelegramUserId = new Map<number, Set<WebSocket>>();
+
+// Formats date fields in PocketBase records to Paris timezone ISO strings
+function formatDates(record: any): any {
+  if (!record) return record;
+
+  const formatted = { ...record };
+
+  // Format created and updated dates to Europe/Paris timezone if they exist
+  if (formatted.created) {
+    formatted.created = new Date(formatted.created).toLocaleString('fr-FR', {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  }
+  if (formatted.updated) {
+    formatted.updated = new Date(formatted.updated).toLocaleString('fr-FR', {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  }
+
+  return formatted;
+}
+
+// Formats date fields in an array of PocketBase records
+function formatDatesArray(records: any[]): any[] {
+  return records.map(formatDates);
+}
 
 // Broadcasts a message to all active WebSocket connections for a given Telegram user
 function wsBroadcast(telegramUserId: number, payload: unknown) {
@@ -167,7 +206,7 @@ app.get("/api/me", requireTma, async (req: any, res) => {
       .getFirstListItem(`telegram_user_id="${String(telegramUserId)}"`)
       .catch(() => null);
 
-    res.json({ user });
+    res.json({ user: formatDates(user) });
   } catch (e) {
     console.error("Error fetching user:", e);
     res.status(500).json({ error: "failed_to_fetch_user" });
@@ -187,7 +226,7 @@ app.get("/api/transactions", requireTma, async (req: any, res) => {
     if (!user) return res.json({ transactions: [] });
 
     const txs = await getUserTransactions(user.id).catch(() => []);
-    res.json({ transactions: txs });
+    res.json({ transactions: formatDatesArray(txs) });
   } catch (e) {
     console.error("Error fetching transactions:", e);
     res.status(500).json({ error: "failed_to_fetch_transactions" });
@@ -201,7 +240,7 @@ app.post("/api/transaction/:id/status", requireTma, async (req: any, res) => {
     const { status } = req.body; // Expected: "CONFIRMED" | "CANCELLED"
 
     const record = await pb.collection("transactions").update(id, { status });
-    res.json({ ok: true, transaction: record });
+    res.json({ ok: true, transaction: formatDates(record) });
   } catch (e) {
     console.error("Error updating transaction status:", e);
     res.status(500).json({ error: "failed_to_update_status" });
@@ -215,7 +254,7 @@ app.post("/api/transaction/:id/simulate_deposit", requireTma, async (req: any, r
 
     const record = await pb.collection("transactions").update(id, { status: "DEPOSITED" });
     console.log(`transaction id : ${id}  DEPOSITED`);
-    res.json({ ok: true, transaction: record });
+    res.json({ ok: true, transaction: formatDates(record) });
   } catch (e) {
     console.error("Error updating transaction status:", e);
     res.status(500).json({ error: "failed_to_update_status" });
@@ -243,6 +282,7 @@ app.post("/api/transaction/submit", requireTma, async (req: any, res) => {
     res.json({
       ok: true,
       transaction_id: record.id,
+      transaction: formatDates(record),
       message: "Transaction créée avec succès",
     });
   } catch (e) {

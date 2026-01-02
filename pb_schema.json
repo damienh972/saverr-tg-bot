@@ -1,1397 +1,1382 @@
 [
-  {
-    "id": "pbc_3142635823",
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
-    "name": "_superusers",
-    "type": "auth",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
+    {
+        "id": "pbc_3142635823",
+        "listRule": null,
+        "viewRule": null,
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "_superusers",
+        "type": "auth",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cost": 0,
+                "hidden": true,
+                "id": "password901924565",
+                "max": 0,
+                "min": 8,
+                "name": "password",
+                "pattern": "",
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "password"
+            },
+            {
+                "autogeneratePattern": "[a-zA-Z0-9]{50}",
+                "hidden": true,
+                "id": "text2504183744",
+                "max": 60,
+                "min": 30,
+                "name": "tokenKey",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "exceptDomains": null,
+                "hidden": false,
+                "id": "email3885137012",
+                "name": "email",
+                "onlyDomains": null,
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "email"
+            },
+            {
+                "hidden": false,
+                "id": "bool1547992806",
+                "name": "emailVisibility",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "bool256245529",
+                "name": "verified",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
+            "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
+        ],
         "system": true,
-        "type": "text"
-      },
-      {
-        "cost": 0,
-        "hidden": true,
-        "id": "password901924565",
-        "max": 0,
-        "min": 8,
-        "name": "password",
-        "pattern": "",
-        "presentable": false,
-        "required": true,
-        "system": true,
-        "type": "password"
-      },
-      {
-        "autogeneratePattern": "[a-zA-Z0-9]{50}",
-        "hidden": true,
-        "id": "text2504183744",
-        "max": 60,
-        "min": 30,
-        "name": "tokenKey",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "exceptDomains": null,
-        "hidden": false,
-        "id": "email3885137012",
-        "name": "email",
-        "onlyDomains": null,
-        "presentable": false,
-        "required": true,
-        "system": true,
-        "type": "email"
-      },
-      {
-        "hidden": false,
-        "id": "bool1547992806",
-        "name": "emailVisibility",
-        "presentable": false,
-        "required": false,
-        "system": true,
-        "type": "bool"
-      },
-      {
-        "hidden": false,
-        "id": "bool256245529",
-        "name": "verified",
-        "presentable": false,
-        "required": false,
-        "system": true,
-        "type": "bool"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX `idx_tokenKey_pbc_3142635823` ON `_superusers` (`tokenKey`)",
-      "CREATE UNIQUE INDEX `idx_email_pbc_3142635823` ON `_superusers` (`email`) WHERE `email` != ''"
-    ],
-    "system": true,
-    "authRule": "",
-    "manageRule": null,
-    "authAlert": {
-      "enabled": true,
-      "emailTemplate": {
-        "subject": "Login from a new location",
-        "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-      }
+        "authRule": "",
+        "manageRule": null,
+        "authAlert": {
+            "enabled": true,
+            "emailTemplate": {
+                "subject": "Login from a new location",
+                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "oauth2": {
+            "mappedFields": {
+                "id": "",
+                "name": "",
+                "username": "",
+                "avatarURL": ""
+            },
+            "enabled": false
+        },
+        "passwordAuth": {
+            "enabled": true,
+            "identityFields": [
+                "email"
+            ]
+        },
+        "mfa": {
+            "enabled": false,
+            "duration": 1800,
+            "rule": ""
+        },
+        "otp": {
+            "enabled": false,
+            "duration": 180,
+            "length": 8,
+            "emailTemplate": {
+                "subject": "OTP for {APP_NAME}",
+                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "authToken": {
+            "duration": 86400
+        },
+        "passwordResetToken": {
+            "duration": 1800
+        },
+        "emailChangeToken": {
+            "duration": 1800
+        },
+        "verificationToken": {
+            "duration": 259200
+        },
+        "fileToken": {
+            "duration": 180
+        },
+        "verificationTemplate": {
+            "subject": "Verify your {APP_NAME} email",
+            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "resetPasswordTemplate": {
+            "subject": "Reset your {APP_NAME} password",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "confirmEmailChangeTemplate": {
+            "subject": "Confirm your {APP_NAME} new email address",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        }
     },
-    "oauth2": {
-      "mappedFields": {
-        "id": "",
-        "name": "",
-        "username": "",
-        "avatarURL": ""
-      },
-      "enabled": false
+    {
+        "id": "_pb_users_auth_",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "id = @request.auth.id",
+        "updateRule": "",
+        "deleteRule": "id = @request.auth.id",
+        "name": "users",
+        "type": "auth",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cost": 0,
+                "hidden": true,
+                "id": "password901924565",
+                "max": 0,
+                "min": 8,
+                "name": "password",
+                "pattern": "",
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "password"
+            },
+            {
+                "autogeneratePattern": "[a-zA-Z0-9]{50}",
+                "hidden": true,
+                "id": "text2504183744",
+                "max": 60,
+                "min": 30,
+                "name": "tokenKey",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "exceptDomains": null,
+                "hidden": false,
+                "id": "email3885137012",
+                "name": "email",
+                "onlyDomains": null,
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "email"
+            },
+            {
+                "hidden": false,
+                "id": "bool1547992806",
+                "name": "emailVisibility",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "bool256245529",
+                "name": "verified",
+                "presentable": false,
+                "required": false,
+                "system": true,
+                "type": "bool"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1579384326",
+                "max": 255,
+                "min": 0,
+                "name": "name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text2849095986",
+                "max": 255,
+                "min": 0,
+                "name": "first_name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1146066909",
+                "max": 0,
+                "min": 0,
+                "name": "phone",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text4230525539",
+                "max": 0,
+                "min": 0,
+                "name": "telegram_user_id",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1320611069",
+                "max": 0,
+                "min": 0,
+                "name": "noah_virtual_iban",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text175372559",
+                "max": 0,
+                "min": 0,
+                "name": "user_tw_eoa",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "select3619035334",
+                "maxSelect": 1,
+                "name": "kyc_status",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "NOT_STARTED",
+                    "SUBMITTED",
+                    "APPROVED",
+                    "REJECTED",
+                    "DRAFT"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
+            "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
+        ],
+        "system": false,
+        "authRule": "",
+        "manageRule": null,
+        "authAlert": {
+            "enabled": true,
+            "emailTemplate": {
+                "subject": "Login from a new location",
+                "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "oauth2": {
+            "mappedFields": {
+                "id": "",
+                "name": "name",
+                "username": "",
+                "avatarURL": ""
+            },
+            "enabled": false
+        },
+        "passwordAuth": {
+            "enabled": true,
+            "identityFields": [
+                "email"
+            ]
+        },
+        "mfa": {
+            "enabled": false,
+            "duration": 1800,
+            "rule": ""
+        },
+        "otp": {
+            "enabled": false,
+            "duration": 180,
+            "length": 8,
+            "emailTemplate": {
+                "subject": "OTP for {APP_NAME}",
+                "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+            }
+        },
+        "authToken": {
+            "duration": 604800
+        },
+        "passwordResetToken": {
+            "duration": 1800
+        },
+        "emailChangeToken": {
+            "duration": 1800
+        },
+        "verificationToken": {
+            "duration": 259200
+        },
+        "fileToken": {
+            "duration": 180
+        },
+        "verificationTemplate": {
+            "subject": "Verify your {APP_NAME} email",
+            "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "resetPasswordTemplate": {
+            "subject": "Reset your {APP_NAME} password",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        },
+        "confirmEmailChangeTemplate": {
+            "subject": "Confirm your {APP_NAME} new email address",
+            "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+        }
     },
-    "passwordAuth": {
-      "enabled": true,
-      "identityFields": [
-        "email"
-      ]
+    {
+        "id": "pbc_4275539003",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "name": "_authOrigins",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text4228609354",
+                "max": 0,
+                "min": 0,
+                "name": "fingerprint",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
+        ],
+        "system": true
     },
-    "mfa": {
-      "enabled": false,
-      "duration": 1800,
-      "rule": ""
+    {
+        "id": "pbc_2281828961",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "name": "_externalAuths",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text2462348188",
+                "max": 0,
+                "min": 0,
+                "name": "provider",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1044722854",
+                "max": 0,
+                "min": 0,
+                "name": "providerId",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
+            "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
+        ],
+        "system": true
     },
-    "otp": {
-      "enabled": false,
-      "duration": 180,
-      "length": 8,
-      "emailTemplate": {
-        "subject": "OTP for {APP_NAME}",
-        "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-      }
+    {
+        "id": "pbc_2279338944",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "_mfas",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1582905952",
+                "max": 0,
+                "min": 0,
+                "name": "method",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
+        ],
+        "system": true
     },
-    "authToken": {
-      "duration": 86400
+    {
+        "id": "pbc_1638494021",
+        "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "_otps",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text455797646",
+                "max": 0,
+                "min": 0,
+                "name": "collectionRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text127846527",
+                "max": 0,
+                "min": 0,
+                "name": "recordRef",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cost": 8,
+                "hidden": true,
+                "id": "password901924565",
+                "max": 0,
+                "min": 0,
+                "name": "password",
+                "pattern": "",
+                "presentable": false,
+                "required": true,
+                "system": true,
+                "type": "password"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": true,
+                "id": "text3866985172",
+                "max": 0,
+                "min": 0,
+                "name": "sentTo",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": true,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
+        ],
+        "system": true
     },
-    "passwordResetToken": {
-      "duration": 1800
+    {
+        "id": "pbc_poc_config",
+        "listRule": null,
+        "viewRule": null,
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "config",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text_id",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "txt_key",
+                "max": 0,
+                "min": 0,
+                "name": "key",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "json_value",
+                "maxSize": 0,
+                "name": "value",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "json"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX idx_config_key ON config (key)"
+        ],
+        "system": false
     },
-    "emailChangeToken": {
-      "duration": 1800
+    {
+        "id": "pbc_poc_notifications",
+        "listRule": null,
+        "viewRule": null,
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "notifications",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text_id",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_telegram_users",
+                "hidden": false,
+                "id": "rel_user",
+                "maxSelect": 1,
+                "minSelect": 1,
+                "name": "user",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_3174063690",
+                "hidden": false,
+                "id": "rel_transaction",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "transaction",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "sel_channel",
+                "maxSelect": 1,
+                "name": "channel",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "TELEGRAM",
+                    "EMAIL"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "sel_type",
+                "maxSelect": 1,
+                "name": "type",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "TRANSACTION_CREATED",
+                    "STATUS_UPDATE",
+                    "CONFIRMATION",
+                    "ERROR"
+                ]
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "txt_recipient",
+                "max": 0,
+                "min": 0,
+                "name": "recipient",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "json_payload",
+                "maxSize": 0,
+                "name": "payload",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "json"
+            },
+            {
+                "hidden": false,
+                "id": "sel_status",
+                "maxSelect": 1,
+                "name": "status",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "PENDING",
+                    "SENT",
+                    "FAILED"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "auto_created",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX idx_notifications_status_created ON notifications (status, created)"
+        ],
+        "system": false
     },
-    "verificationToken": {
-      "duration": 259200
+    {
+        "id": "pbc_telegram_users",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "name": "telegram_users",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_phone",
+                "max": 0,
+                "min": 0,
+                "name": "phone",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_telegram_user_id",
+                "max": 0,
+                "min": 0,
+                "name": "telegram_user_id",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "[a-z0-9]{10}",
+                "hidden": false,
+                "id": "text_iban",
+                "max": 0,
+                "min": 0,
+                "name": "noah_customer_id",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "select_kyc_status",
+                "maxSelect": 1,
+                "name": "kyc_status",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "DRAFT",
+                    "PENDING",
+                    "APPROVED",
+                    "REJECTED"
+                ]
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_noah_virtual_iban",
+                "max": 0,
+                "min": 0,
+                "name": "noah_virtual_iban",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_user_tw_eoa",
+                "max": 0,
+                "min": 0,
+                "name": "user_tw_eoa",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_name",
+                "max": 255,
+                "min": 0,
+                "name": "name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text_first_name",
+                "max": 255,
+                "min": 0,
+                "name": "first_name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE UNIQUE INDEX idx_telegram_user_id ON telegram_users (telegram_user_id)",
+            "CREATE INDEX idx_phone ON telegram_users (phone)"
+        ],
+        "system": false
     },
-    "fileToken": {
-      "duration": 180
-    },
-    "verificationTemplate": {
-      "subject": "Verify your {APP_NAME} email",
-      "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-    },
-    "resetPasswordTemplate": {
-      "subject": "Reset your {APP_NAME} password",
-      "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-    },
-    "confirmEmailChangeTemplate": {
-      "subject": "Confirm your {APP_NAME} new email address",
-      "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+    {
+        "id": "pbc_3174063690",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "name": "transactions",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_telegram_users",
+                "hidden": false,
+                "id": "rel_user",
+                "maxSelect": 1,
+                "minSelect": 1,
+                "name": "user",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "select2363381545",
+                "maxSelect": 1,
+                "name": "type",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "TRANSFER",
+                    "ESCROW"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "select1045090739",
+                "maxSelect": 1,
+                "name": "direction",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "EURO_TO_RDC",
+                    "RDC_TO_EURO"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "number2392944706",
+                "max": null,
+                "min": null,
+                "name": "amount",
+                "onlyInt": false,
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "number"
+            },
+            {
+                "hidden": false,
+                "id": "sel_funds_in",
+                "maxSelect": 1,
+                "name": "funds_in",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "CASH",
+                    "MOBILE_MONEY",
+                    "STABLE",
+                    "BANK_WIRE"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "sel_funds_out",
+                "maxSelect": 1,
+                "name": "funds_out",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "CASH",
+                    "MOBILE_MONEY",
+                    "STABLE",
+                    "BANK_WIRE"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "select2063623452",
+                "maxSelect": 1,
+                "name": "status",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "CREATED",
+                    "PROCESSING",
+                    "DEPOSITED",
+                    "TRANSFERRED",
+                    "COMPLETED",
+                    "FAILED",
+                    "CANCELLED"
+                ]
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "txt_reference",
+                "max": 0,
+                "min": 0,
+                "name": "reference",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "select1767278655",
+                "maxSelect": 1,
+                "name": "currency",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "usd",
+                    "euro",
+                    "usdc",
+                    "eure"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [
+            "CREATE INDEX idx_transactions_status_created ON transactions (status, created)",
+            "CREATE INDEX idx_transactions_user_created ON transactions (user, created)"
+        ],
+        "system": false
     }
-  },
-  {
-    "id": "_pb_users_auth_",
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "id = @request.auth.id",
-    "updateRule": "",
-    "deleteRule": "id = @request.auth.id",
-    "name": "users",
-    "type": "auth",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "cost": 0,
-        "hidden": true,
-        "id": "password901924565",
-        "max": 0,
-        "min": 8,
-        "name": "password",
-        "pattern": "",
-        "presentable": false,
-        "required": true,
-        "system": true,
-        "type": "password"
-      },
-      {
-        "autogeneratePattern": "[a-zA-Z0-9]{50}",
-        "hidden": true,
-        "id": "text2504183744",
-        "max": 60,
-        "min": 30,
-        "name": "tokenKey",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "exceptDomains": null,
-        "hidden": false,
-        "id": "email3885137012",
-        "name": "email",
-        "onlyDomains": null,
-        "presentable": false,
-        "required": true,
-        "system": true,
-        "type": "email"
-      },
-      {
-        "hidden": false,
-        "id": "bool1547992806",
-        "name": "emailVisibility",
-        "presentable": false,
-        "required": false,
-        "system": true,
-        "type": "bool"
-      },
-      {
-        "hidden": false,
-        "id": "bool256245529",
-        "name": "verified",
-        "presentable": false,
-        "required": false,
-        "system": true,
-        "type": "bool"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1579384326",
-        "max": 255,
-        "min": 0,
-        "name": "name",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text2849095986",
-        "max": 255,
-        "min": 0,
-        "name": "first_name",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1146066909",
-        "max": 0,
-        "min": 0,
-        "name": "phone",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text4230525539",
-        "max": 0,
-        "min": 0,
-        "name": "telegram_user_id",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1320611069",
-        "max": 0,
-        "min": 0,
-        "name": "noah_virtual_iban",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text175372559",
-        "max": 0,
-        "min": 0,
-        "name": "user_tw_eoa",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "select3619035334",
-        "maxSelect": 1,
-        "name": "kyc_status",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "select",
-        "values": [
-          "NOT_STARTED",
-          "PENDING",
-          "APPROVED",
-          "REJECTED",
-          "DRAFT"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
-      "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
-    ],
-    "system": false,
-    "authRule": "",
-    "manageRule": null,
-    "authAlert": {
-      "enabled": true,
-      "emailTemplate": {
-        "subject": "Login from a new location",
-        "body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-      }
-    },
-    "oauth2": {
-      "mappedFields": {
-        "id": "",
-        "name": "name",
-        "username": "",
-        "avatarURL": ""
-      },
-      "enabled": false
-    },
-    "passwordAuth": {
-      "enabled": true,
-      "identityFields": [
-        "email"
-      ]
-    },
-    "mfa": {
-      "enabled": false,
-      "duration": 1800,
-      "rule": ""
-    },
-    "otp": {
-      "enabled": false,
-      "duration": 180,
-      "length": 8,
-      "emailTemplate": {
-        "subject": "OTP for {APP_NAME}",
-        "body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-      }
-    },
-    "authToken": {
-      "duration": 604800
-    },
-    "passwordResetToken": {
-      "duration": 1800
-    },
-    "emailChangeToken": {
-      "duration": 1800
-    },
-    "verificationToken": {
-      "duration": 259200
-    },
-    "fileToken": {
-      "duration": 180
-    },
-    "verificationTemplate": {
-      "subject": "Verify your {APP_NAME} email",
-      "body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-    },
-    "resetPasswordTemplate": {
-      "subject": "Reset your {APP_NAME} password",
-      "body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-    },
-    "confirmEmailChangeTemplate": {
-      "subject": "Confirm your {APP_NAME} new email address",
-      "body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
-    }
-  },
-  {
-    "id": "pbc_telegram_users",
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "",
-    "updateRule": "",
-    "deleteRule": null,
-    "name": "telegram_users",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_phone",
-        "max": 0,
-        "min": 0,
-        "name": "phone",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_telegram_user_id",
-        "max": 0,
-        "min": 0,
-        "name": "telegram_user_id",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_telegram_chat_id",
-        "max": 0,
-        "min": 0,
-        "name": "telegram_chat_id",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "select_kyc_status",
-        "maxSelect": 1,
-        "name": "kyc_status",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "select",
-        "values": [
-          "DRAFT",
-          "NOT_STARTED",
-          "PENDING",
-          "APPROVED",
-          "REJECTED"
-        ]
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_noah_virtual_iban",
-        "max": 0,
-        "min": 0,
-        "name": "noah_virtual_iban",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_user_tw_eoa",
-        "max": 0,
-        "min": 0,
-        "name": "user_tw_eoa",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_name",
-        "max": 255,
-        "min": 0,
-        "name": "name",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_first_name",
-        "max": 255,
-        "min": 0,
-        "name": "first_name",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text_iban",
-        "max": 0,
-        "min": 0,
-        "name": "iban",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX idx_telegram_user_id ON telegram_users (telegram_user_id)",
-      "CREATE INDEX idx_phone ON telegram_users (phone)",
-      "CREATE INDEX idx_telegram_chat_id ON telegram_users (telegram_chat_id)"
-    ],
-    "system": false
-  },
-  {
-    "id": "pbc_4275539003",
-    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "name": "_authOrigins",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text455797646",
-        "max": 0,
-        "min": 0,
-        "name": "collectionRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text127846527",
-        "max": 0,
-        "min": 0,
-        "name": "recordRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text4228609354",
-        "max": 0,
-        "min": 0,
-        "name": "fingerprint",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX `idx_authOrigins_unique_pairs` ON `_authOrigins` (collectionRef, recordRef, fingerprint)"
-    ],
-    "system": true
-  },
-  {
-    "id": "pbc_2281828961",
-    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "name": "_externalAuths",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text455797646",
-        "max": 0,
-        "min": 0,
-        "name": "collectionRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text127846527",
-        "max": 0,
-        "min": 0,
-        "name": "recordRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text2462348188",
-        "max": 0,
-        "min": 0,
-        "name": "provider",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1044722854",
-        "max": 0,
-        "min": 0,
-        "name": "providerId",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX `idx_externalAuths_record_provider` ON `_externalAuths` (collectionRef, recordRef, provider)",
-      "CREATE UNIQUE INDEX `idx_externalAuths_collection_provider` ON `_externalAuths` (collectionRef, provider, providerId)"
-    ],
-    "system": true
-  },
-  {
-    "id": "pbc_2279338944",
-    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
-    "name": "_mfas",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text455797646",
-        "max": 0,
-        "min": 0,
-        "name": "collectionRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text127846527",
-        "max": 0,
-        "min": 0,
-        "name": "recordRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1582905952",
-        "max": 0,
-        "min": 0,
-        "name": "method",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE INDEX `idx_mfas_collectionRef_recordRef` ON `_mfas` (collectionRef,recordRef)"
-    ],
-    "system": true
-  },
-  {
-    "id": "pbc_1638494021",
-    "listRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "viewRule": "@request.auth.id != '' && recordRef = @request.auth.id && collectionRef = @request.auth.collectionId",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
-    "name": "_otps",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text455797646",
-        "max": 0,
-        "min": 0,
-        "name": "collectionRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text127846527",
-        "max": 0,
-        "min": 0,
-        "name": "recordRef",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "cost": 8,
-        "hidden": true,
-        "id": "password901924565",
-        "max": 0,
-        "min": 0,
-        "name": "password",
-        "pattern": "",
-        "presentable": false,
-        "required": true,
-        "system": true,
-        "type": "password"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": true,
-        "id": "text3866985172",
-        "max": 0,
-        "min": 0,
-        "name": "sentTo",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": true,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE INDEX `idx_otps_collectionRef_recordRef` ON `_otps` (collectionRef, recordRef)"
-    ],
-    "system": true
-  },
-  {
-    "id": "pbc_poc_config",
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
-    "name": "config",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text_id",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "txt_key",
-        "max": 0,
-        "min": 0,
-        "name": "key",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "json_value",
-        "maxSize": 0,
-        "name": "value",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "json"
-      }
-    ],
-    "indexes": [
-      "CREATE UNIQUE INDEX idx_config_key ON config (key)"
-    ],
-    "system": false
-  },
-  {
-    "id": "pbc_poc_notifications",
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
-    "name": "notifications",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text_id",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "cascadeDelete": false,
-        "collectionId": "pbc_telegram_users",
-        "hidden": false,
-        "id": "rel_user",
-        "maxSelect": 1,
-        "minSelect": 1,
-        "name": "user",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "relation"
-      },
-      {
-        "cascadeDelete": false,
-        "collectionId": "pbc_3174063690",
-        "hidden": false,
-        "id": "rel_transaction",
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "transaction",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "relation"
-      },
-      {
-        "hidden": false,
-        "id": "sel_channel",
-        "maxSelect": 1,
-        "name": "channel",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "TELEGRAM",
-          "EMAIL"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "sel_type",
-        "maxSelect": 1,
-        "name": "type",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "TRANSACTION_CREATED",
-          "STATUS_UPDATE",
-          "CONFIRMATION",
-          "ERROR"
-        ]
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "txt_recipient",
-        "max": 0,
-        "min": 0,
-        "name": "recipient",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "json_payload",
-        "maxSize": 0,
-        "name": "payload",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "json"
-      },
-      {
-        "hidden": false,
-        "id": "sel_status",
-        "maxSelect": 1,
-        "name": "status",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "PENDING",
-          "SENT",
-          "FAILED"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "auto_created",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE INDEX idx_notifications_status_created ON notifications (status, created)"
-    ],
-    "system": false
-  },
-  {
-    "id": "pbc_3174063690",
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "",
-    "updateRule": "",
-    "deleteRule": null,
-    "name": "transactions",
-    "type": "base",
-    "fields": [
-      {
-        "autogeneratePattern": "[a-z0-9]{15}",
-        "hidden": false,
-        "id": "text3208210256",
-        "max": 15,
-        "min": 15,
-        "name": "id",
-        "pattern": "^[a-z0-9]+$",
-        "presentable": false,
-        "primaryKey": true,
-        "required": true,
-        "system": true,
-        "type": "text"
-      },
-      {
-        "cascadeDelete": false,
-        "collectionId": "pbc_telegram_users",
-        "hidden": false,
-        "id": "rel_user",
-        "maxSelect": 1,
-        "minSelect": 1,
-        "name": "user",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "relation"
-      },
-      {
-        "hidden": false,
-        "id": "select2363381545",
-        "maxSelect": 1,
-        "name": "type",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "TRANSFER",
-          "ESCROW"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "select1045090739",
-        "maxSelect": 1,
-        "name": "direction",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "EURO_TO_RDC",
-          "RDC_TO_EURO"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "number2392944706",
-        "max": null,
-        "min": null,
-        "name": "amount",
-        "onlyInt": false,
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "number"
-      },
-      {
-        "hidden": false,
-        "id": "sel_funds_in",
-        "maxSelect": 1,
-        "name": "funds_in",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "CASH",
-          "MOBILE_MONEY",
-          "STABLE",
-          "BANK_WIRE"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "sel_funds_out",
-        "maxSelect": 1,
-        "name": "funds_out",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "CASH",
-          "MOBILE_MONEY",
-          "STABLE",
-          "BANK_WIRE"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "select2063623452",
-        "maxSelect": 1,
-        "name": "status",
-        "presentable": false,
-        "required": true,
-        "system": false,
-        "type": "select",
-        "values": [
-          "CREATED",
-          "AWAITING_CONFIRMATION",
-          "PROCESSING",
-          "COMPLETED",
-          "FAILED",
-          "CANCELLED"
-        ]
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "txt_reference",
-        "max": 0,
-        "min": 0,
-        "name": "reference",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": true,
-        "system": false,
-        "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "select1767278655",
-        "maxSelect": 1,
-        "name": "currency",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "select",
-        "values": [
-          "usd",
-          "euro",
-          "usdc",
-          "eure"
-        ]
-      },
-      {
-        "hidden": false,
-        "id": "autodate2990389176",
-        "name": "created",
-        "onCreate": true,
-        "onUpdate": false,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      },
-      {
-        "hidden": false,
-        "id": "autodate3332085495",
-        "name": "updated",
-        "onCreate": true,
-        "onUpdate": true,
-        "presentable": false,
-        "system": false,
-        "type": "autodate"
-      }
-    ],
-    "indexes": [
-      "CREATE INDEX idx_transactions_status_created ON transactions (status, created)",
-      "CREATE INDEX idx_transactions_user_created ON transactions (user, created)"
-    ],
-    "system": false
-  }
 ]
