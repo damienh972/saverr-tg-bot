@@ -22,31 +22,31 @@ export function formatCurrency(currency: string): string {
 export const MESSAGES = {
   // Webhooks
   WEBHOOK_CREATED: (ref: string, amount: number, currency: string) =>
-    `🔔 Nouvelle transaction créée \n\n📋 Référence : ${ref}\n💰 Montant : ${amount} ${formatCurrency(currency)}\n📊 Statut : ${formatStatus(
+    `🔔 *Nouvelle transaction créée* \n\n📋 Référence : ${ref}\n💰 Montant : ${amount} ${formatCurrency(currency)}\n📊 Statut : ${formatStatus(
       "CREATED"
     )}`,
   WEBHOOK_PROCESSING: (ref: string) =>
-    `🔄 Transaction validée par nos équipes \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `🔄 *Transaction validée par nos équipes* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "PROCESSING"
-    )}`,
+    )}\n\n🔔 Votre intervention est nécessaire pour finaliser cette opération. Merci de vous rendre sur votre compte.`,
   WEBHOOK_DEPOSITED: (ref: string) =>
-    `💼 Fonds déposés \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `💼 *Fonds déposés* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "DEPOSITED"
     )}`,
   WEBHOOK_TRANSFERRED: (ref: string) =>
-    `🚀 Fonds transférés \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `🚀 *Fonds transférés* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "TRANSFERRED"
     )}`,
   WEBHOOK_COMPLETED: (ref: string) =>
-    `✅ Transaction terminée avec succès \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `✅ *Transaction terminée avec succès* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "COMPLETED"
     )}`,
   WEBHOOK_CANCELLED: (ref: string) =>
-    `❌ Transaction annulée \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `❌ *Transaction annulée* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "CANCELLED"
     )}`,
   WEBHOOK_FAILED: (ref: string) =>
-    `⚠️ Transaction échouée \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
+    `⚠️ *Transaction échouée* \n\n📋 ${ref}\n📊 Statut : ${formatStatus(
       "FAILED"
     )}`,
 };

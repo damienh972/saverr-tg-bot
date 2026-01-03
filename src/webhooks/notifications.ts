@@ -16,13 +16,17 @@ const webhookMessages: Record<string, (tx: any) => string> = {
 
 // Handles transaction status updates and sends Telegram notifications
 export async function handleTransactionWebhook(record: any) {
+  
   const getMessage = webhookMessages[record.status];
+  
   if (!getMessage) return;
 
   try {
     const user = await pb.collection("telegram_users").getOne(record.user);
     if (user.telegram_user_id)
-      await bot.sendMessage(user.telegram_user_id, getMessage(record));
+      await bot.sendMessage(user.telegram_user_id, getMessage(record), {
+        parse_mode: "Markdown",
+      });
   } catch {
     console.log(`No Telegram for user ${record.user}`);
   }
