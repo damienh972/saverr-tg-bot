@@ -4,7 +4,7 @@ import { MESSAGES } from "../config/messages";
 
 // Maps transaction statuses to message formatters
 const webhookMessages: Record<string, (tx: any) => string> = {
-  AWAITING_CONFIRMATION: (tx) =>
+  CREATED: (tx) =>
     MESSAGES.WEBHOOK_AWAITING(tx.reference, tx.amount, tx.currency),
   PROCESSING: (tx) => MESSAGES.WEBHOOK_PROCESSING(tx.reference),
   COMPLETED: (tx) => MESSAGES.WEBHOOK_COMPLETED(tx.reference),
@@ -18,7 +18,7 @@ export async function handleTransactionWebhook(record: any) {
   if (!getMessage) return;
 
   try {
-    const user = await pb.collection("users").getOne(record.user);
+    const user = await pb.collection("telegram_users").getOne(record.user);
     if (user.telegram_user_id)
       await bot.sendMessage(user.telegram_user_id, getMessage(record));
   } catch {
@@ -29,7 +29,7 @@ export async function handleTransactionWebhook(record: any) {
 // Handles KYC status updates and sends appropriate Telegram notifications
 export async function handleKycWebhook(record: any) {
   try {
-    const user = await pb.collection("users").getOne(record.id);
+    const user = await pb.collection("telegram_users").getOne(record.id);
 
     if (user.telegram_user_id && record.kyc_status) {
       let message = "";
