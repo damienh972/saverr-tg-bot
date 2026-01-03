@@ -436,10 +436,8 @@ wss.on("connection", (ws, req) => {
     }
   });
 
-  // Send welcome message to newly connected client
-  console.log("✨ Sending hello to user:", telegramUserId);
+  // Send welcome message to newly connected client 
   ws.send(JSON.stringify({ type: "hello", telegramUserId }));
-  console.log("✅ Hello sent");
 });
 
 const PORT = Number(process.env.PORT || 3000);
