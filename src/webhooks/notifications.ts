@@ -5,8 +5,10 @@ import { MESSAGES } from "../config/messages";
 // Maps transaction statuses to message formatters
 const webhookMessages: Record<string, (tx: any) => string> = {
   CREATED: (tx) =>
-    MESSAGES.WEBHOOK_AWAITING(tx.reference, tx.amount, tx.currency),
+    MESSAGES.WEBHOOK_CREATED(tx.reference, tx.amount, tx.currency),
   PROCESSING: (tx) => MESSAGES.WEBHOOK_PROCESSING(tx.reference),
+  DEPOSITED: (tx) => MESSAGES.WEBHOOK_DEPOSITED(tx.reference),
+  TRANSFERRED: (tx) => MESSAGES.WEBHOOK_TRANSFERRED(tx.reference),
   COMPLETED: (tx) => MESSAGES.WEBHOOK_COMPLETED(tx.reference),
   CANCELLED: (tx) => MESSAGES.WEBHOOK_CANCELLED(tx.reference),
   FAILED: (tx) => MESSAGES.WEBHOOK_FAILED(tx.reference),
